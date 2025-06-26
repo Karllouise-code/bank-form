@@ -3,7 +3,13 @@
     <Card class="bank-card">
       <template #header>
         <div class="card-header">
-          <h2 class="form-title">Secure Bank Information</h2>
+          <!-- <h2 class="form-title">Secure Bank Information</h2> -->
+          <img
+            src="/src/assets/Bank_white.png"
+            alt="Bank logo"
+            class="logo"
+            width="150px"
+          />
         </div>
       </template>
       <template #content>
@@ -45,7 +51,7 @@
                 :class="{ 'p-invalid': errors.cardNumber }"
                 class="form-input"
               />
-              <label for="cardNumber">Card Number (Last 4 Digits)</label>
+              <label for="cardNumber">Card Number</label>
             </FloatLabel>
             <small v-if="errors.cardNumber" class="p-error">{{
               errors.cardNumber
@@ -166,17 +172,13 @@ export default {
 
       this.isSubmitting = true;
       try {
-        // Simulate API call - replace with your actual submission logic
         await new Promise((resolve) => setTimeout(resolve, 1500));
-
         toast.add({
           severity: "success",
           summary: "Success",
           detail: "Information saved successfully",
           life: 3000,
         });
-
-        // Reset form
         this.form = {
           name: "",
           email: "",
@@ -201,15 +203,15 @@ export default {
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap");
 
 .form-container {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  font-family: "Inter", sans-serif;
+  background: #ffffff;
+  font-family: "Open Sans", sans-serif;
 }
 
 .bank-card {
@@ -217,18 +219,14 @@ export default {
   max-width: 480px;
   border-radius: 24px;
   overflow: hidden;
-  box-shadow:
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(16px);
-  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  background: #ffffff;
 }
 
 .card-header {
-  padding: 2rem 2rem 1rem;
   text-align: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #b11116;
+  color: #ffffff;
 }
 
 .form-title {
@@ -258,17 +256,17 @@ export default {
 .form-input {
   width: 100%;
   padding: 1rem;
-  border: 2px solid #e2e8f0;
+  border: 2px solid #d5b527;
   border-radius: 12px;
   font-size: 1rem;
-  font-family: "Inter", sans-serif;
-  transition: all 0.3s ease;
+  font-family: "Open Sans", sans-serif;
   background: #ffffff;
+  transition: all 0.3s ease;
 }
 
 .form-input:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  border-color: #b11116;
+  box-shadow: 0 0 0 4px rgba(177, 17, 22, 0.1);
   outline: none;
 }
 
@@ -282,16 +280,16 @@ export default {
   font-size: 1.1rem;
   font-weight: 600;
   border-radius: 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #d5b527;
   border: none;
-  color: white;
+  color: #ffffff;
   transition: all 0.3s ease;
   margin-top: 1rem;
 }
 
 .submit-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 10px 25px rgba(213, 181, 39, 0.4);
 }
 
 .submit-button:disabled {
@@ -335,12 +333,12 @@ export default {
 
 :deep(.p-float-label .p-focus ~ label),
 :deep(.p-float-label .p-filled ~ label) {
-  color: #667eea;
+  color: #b11116;
   font-weight: 600;
 }
 
 :deep(.p-button) {
-  font-family: "Inter", sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 :deep(.p-button .p-button-icon) {
