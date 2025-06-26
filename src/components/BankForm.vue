@@ -3,7 +3,6 @@
     <Card class="bank-card">
       <template #header>
         <div class="card-header">
-          <!-- <h2 class="form-title">Secure Bank Information</h2> -->
           <img
             src="/src/assets/Bank_white.png"
             alt="Bank logo"
@@ -47,10 +46,19 @@
               <InputText
                 id="cardNumber"
                 v-model="form.cardNumber"
-                maxlength="4"
+                maxlength="19"
                 :class="{ 'p-invalid': errors.cardNumber }"
-                class="form-input"
-              />
+                class="form-input pr-10"
+                @input="detectCardType"
+              >
+                <template #righticon>
+                  <span
+                    v-if="cardType"
+                    :class="`pi ${cardTypeIcon}`"
+                    class="p-inputgroup-addon p-2"
+                  ></span>
+                </template>
+              </InputText>
               <label for="cardNumber">Card Number</label>
             </FloatLabel>
             <small v-if="errors.cardNumber" class="p-error">{{
@@ -101,7 +109,7 @@
         </form>
       </template>
     </Card>
-    <Toast position="top-right" />
+    <Toast ref="toast" position="top-right" />
   </div>
 </template>
 
@@ -112,7 +120,6 @@ import InputMask from "primevue/inputmask";
 import FloatLabel from "primevue/floatlabel";
 import Button from "primevue/button";
 import Toast from "primevue/toast";
-import { useToast } from "primevue/usetoast";
 
 export default {
   components: {
@@ -134,16 +141,51 @@ export default {
       },
       errors: {},
       isSubmitting: false,
+      cardType: null,
     };
   },
+  computed: {
+    cardTypeIcon() {
+      switch (this.cardType) {
+        case "visa":
+          return "pi-credit-card";
+        case "mastercard":
+          return "pi-cc-mastercard";
+        default:
+          return "";
+      }
+    },
+  },
   methods: {
+    detectCardType() {
+      const cardNumber = this.form.cardNumber.replace(/\D/g, "");
+      if (!cardNumber) {
+        this.cardType = null;
+        return;
+      }
+
+      if (/^4[0-9]{12}(?:[0-9]{3})?$/.test(cardNumber)) {
+        this.cardType = "visa";
+      } else if (
+        /^(5[1-5][0-9]{14}|2(22[1-9]|2[3-9][0-9]|[3-6][0-9]{2}|7[0-1][0-9]|720)[0-9]{12})$/.test(
+          cardNumber,
+        )
+      ) {
+        this.cardType = "mastercard";
+      } else {
+        this.cardType = null;
+      }
+    },
     validateForm() {
       this.errors = {};
       if (!this.form.name) this.errors.name = "Name is required";
       if (!this.form.email || !/\S+@\S+\.\S+/.test(this.form.email))
         this.errors.email = "Valid email is required";
-      if (!this.form.cardNumber || !/^\d{4}$/.test(this.form.cardNumber))
-        this.errors.cardNumber = "Exactly 4 digits required";
+      if (
+        !this.form.cardNumber ||
+        !/^\d{13,19}$/.test(this.form.cardNumber.replace(/\D/g, ""))
+      )
+        this.errors.cardNumber = "Valid card number required (13-19 digits)";
       if (!this.form.cvc || !/^\d{3,4}$/.test(this.form.cvc))
         this.errors.cvc = "CVC must be 3 or 4 digits";
       if (!this.form.expiry || !/^\d{2}\/\d{2}$/.test(this.form.expiry))
@@ -159,9 +201,8 @@ export default {
       return Object.keys(this.errors).length === 0;
     },
     async submitForm() {
-      const toast = useToast();
       if (!this.validateForm()) {
-        toast.add({
+        this.$refs.toast.add({
           severity: "error",
           summary: "Validation Error",
           detail: "Please fix the errors in the form",
@@ -173,7 +214,7 @@ export default {
       this.isSubmitting = true;
       try {
         await new Promise((resolve) => setTimeout(resolve, 1500));
-        toast.add({
+        this.$refs.toast.add({
           severity: "success",
           summary: "Success",
           detail: "Information saved successfully",
@@ -187,7 +228,7 @@ export default {
           expiry: "",
         };
       } catch (error) {
-        toast.add({
+        this.$refs.toast.add({
           severity: "error",
           summary: "Error",
           detail: "Failed to save information",
@@ -227,6 +268,11 @@ export default {
   text-align: center;
   background: #b11116;
   color: #ffffff;
+}
+
+.logo {
+  max-width: 150px;
+  height: auto;
 }
 
 .form-title {
@@ -290,6 +336,7 @@ export default {
 .submit-button:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(213, 181, 39, 0.4);
+  background: #c4a424;
 }
 
 .submit-button:disabled {
@@ -345,6 +392,13 @@ export default {
   margin-right: 0.5rem;
 }
 
+:deep(.p-inputgroup-addon) {
+  background: #ffffff;
+  border: none;
+  border-left: 2px solid #d5b527;
+  border-radius: 0 12px 12px 0;
+}
+
 /* Responsive Design */
 @media (max-width: 640px) {
   .form-container {
@@ -361,6 +415,14 @@ export default {
 
   .form-title {
     font-size: 1.5rem;
+  }
+
+  .card-header {
+    padding: 1.5rem;
+  }
+
+  .logo {
+    max-width: 120px;
   }
 }
 </style>
