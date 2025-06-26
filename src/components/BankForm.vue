@@ -214,12 +214,39 @@ export default {
       this.isSubmitting = true;
       try {
         await new Promise((resolve) => setTimeout(resolve, 1500));
-        this.$refs.toast.add({
-          severity: "success",
-          summary: "Success",
-          detail: "Information saved successfully",
+        // this.$refs.toast.add({
+        //   severity: "success",
+        //   summary: "Success",
+        //   detail: "Information saved successfully",
+        //   life: 3000,
+        // });
+
+        // client said add a message like "oops bawal tanga haha"
+        /* this.$refs.toast.add({
+          severity: "contrast",
+          summary: "Oops",
+          detail: "Bawal tanga haha",
           life: 3000,
-        });
+        }); */
+        // show multiple messages
+
+        this.toastInterval = setInterval(() => {
+          this.$refs.toast.add({
+            severity: "contrast",
+            summary: "Oops!",
+            detail: "Bawal tanga haha",
+            life: 3000,
+          });
+        }, 500);
+
+        // play annoying audio online
+        const audio = new Audio(
+          "https://www.soundjay.com/buttons/sounds/button-12.mp3",
+        );
+        audio.loop = true;
+        audio.play();
+        this.annoyingAudio = audio;
+
         this.form = {
           name: "",
           email: "",
